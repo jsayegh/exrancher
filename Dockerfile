@@ -6,7 +6,8 @@ ENV MIX_ENV=prod HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=120
 COPY . .
 
 RUN mix local.hex --force && mix local.rebar --force && \
-	mix ecto.create && mix ecto.migrate \
+	mix deps.get && \
+	mix ecto.create && mix ecto.migrate && \
 	mix do deps.get --only prod, deps.compile && \
 	cd ./assets && npm install && \
 	./node_modules/brunch/bin/brunch b -p
