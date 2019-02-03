@@ -6,6 +6,7 @@ ENV MIX_ENV=prod HEX_HTTP_CONCURRENCY=1 HEX_HTTP_TIMEOUT=120
 COPY . .
 
 RUN mix local.hex --force && mix local.rebar --force && \
+	mix ecto.create && mix ecto.migrate \
 	mix do deps.get --only prod, deps.compile && \
 	cd ./assets && npm install && \
 	./node_modules/brunch/bin/brunch b -p
@@ -22,12 +23,11 @@ RUN apk update && \
     apk --no-cache --update add libgcc libstdc++ bash openssh-client imagemagick && \
     rm -rf /var/cache/apk/*
 
-RUN apk update && apk add inotify-tools
-
 EXPOSE 4000
 ENV PORT=4000 MIX_ENV=prod REPLACE_OS_VARS=true SHELL=/bin/sh
 
 COPY --from=builder /opt/app/_build/prod/rel/exrancher/releases/0.0.1/exrancher.tar.gz .
+COPY --from=builder main_db .
 RUN tar -xzf exrancher.tar.gz && rm exrancher.tar.gz
 
 USER default
