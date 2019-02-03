@@ -15,13 +15,26 @@ defmodule ExrancherWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    case Accounts.create_user(user_params) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :show, user))
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+    case user_params do
+      %{"name" => name, "username" => username, "files" => %Plug.Upload{} = files} ->
+        File.cp(files.path, "priv/" <> files.filename)
+
+        case Accounts.create_user(%{
+               "name" => name,
+               "username" => username,
+               "files" => "priv/" <> files.filename
+             }) do
+          {:ok, user} ->
+            conn
+            |> put_flash(:info, "User created successfully.")
+            |> redirect(to: user_path(conn, :show, user))
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            render(conn, "new.html", changeset: changeset)
+        end
+
+      _ ->
+        render(conn, "new.html", changeset: %Ecto.Changeset{})
     end
   end
 
@@ -44,6 +57,7 @@ defmodule ExrancherWeb.UserController do
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: user_path(conn, :show, user))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
     end

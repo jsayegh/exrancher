@@ -2,11 +2,10 @@ defmodule Exrancher.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "users" do
-    field :files, {:array, :string}
-    field :name, :string
-    field :username, :string
+    field(:files, :string)
+    field(:name, :string)
+    field(:username, :string)
 
     timestamps()
   end
