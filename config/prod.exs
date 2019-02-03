@@ -15,8 +15,14 @@ use Mix.Config
 # which you typically run after static files are built.
 config :exrancher, ExrancherWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  http: [port: {:system, "PORT"}],
+  url: [host:s "${HOST}", port: 4000],
+  secret_key_base: "${SECRET_KEY_BASE}",
+  force_ssl: [rewrite_on: [:x_forwarded_proto]],
+  server: true,
+  root: ".",
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  version: Application.spec(:myapp, :vsn)
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -61,4 +67,4 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
+# import_config "prod.secret.exs"
