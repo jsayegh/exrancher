@@ -1,5 +1,7 @@
 defmodule Exrancher.Repo do
-  use Ecto.Repo, otp_app: :exrancher
+  use Ecto.Repo,
+    otp_app: :exrancher,
+    adapter: Sqlite.Ecto2
 
   @doc """
   Dynamically loads the repository url from the
