@@ -16,7 +16,7 @@ use Mix.Config
 config :exrancher, ExrancherWeb.Endpoint,
   load_from_system_env: true,
   http: [port: {:system, "PORT"}],
-  url: [host:s "${HOST}", port: 4000],
+  url: [host: "${HOST}", port: 4000],
   secret_key_base: "${SECRET_KEY_BASE}",
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   server: true,
